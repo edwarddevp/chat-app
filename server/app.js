@@ -1,8 +1,9 @@
-const WebSocket = require("w");
+const WebSocket = require("ws");
+const { nanoid } = require("nanoid");
 
 const wss = new WebSocket.Server({ port: 8989 });
 
-const users = [];
+let users = [];
 
 const broadcast = (data, ws) => {
   wss.clients.forEach((client) => {
@@ -12,43 +13,53 @@ const broadcast = (data, ws) => {
   });
 };
 
-wss.on('connection',) (ws) => {
-  let index
-  ws.on('message', (message) => {
-    const data = JSON.parse(message)
+wss.on("connection", (ws) => {
+  let index;
+  let userId;
+  ws.on("message", (message) => {
+    const data = JSON.parse(message);
     switch (data.type) {
-      case 'ADD_USER':
-        index = users.length
-        users.push({ name: data.name, id: index + 1})
-        escape.send(JSON.stringify({
-          type: 'USERS_LIST',
-          users
-        }))
-        broadcast({
-          type: 'USERS_LIST',
-          users
-        }, ws)
+      case "ADD_USER":
+        index = users.length;
+        userId = nanoid(10);
+        users.push({ name: data.name, id: userId });
+        ws.send(
+          JSON.stringify({
+            type: "USER_LIST",
+            users,
+          })
+        );
+        broadcast(
+          {
+            type: "USER_LIST",
+            users,
+          },
+          ws
+        );
         break;
-        case 'ADD_MESSAGE':
-          broadcast({
-            type: 'ADD_MESSAGE',
-            message: statusbar.message,
-            author: data.author
-          }, ws)
-          break;
-        default:
+      case "ADD_MESSAGE":
+        broadcast(
+          {
+            type: "ADD_MESSAGE",
+            message: data.message,
+            author: data.author,
+          },
+          ws
+        );
         break;
-    
       default:
         break;
     }
-  })
-}
-
-wss.on('close', () => {
-  users.splice(index, 1)
-  broadcast({
-    type: 'USERS_LIST',
-    users
-  }, ws)
-})
+  });
+  ws.on("close", () => {
+    users = users.filter((user) => user?.id !== userId);
+    console.log("disconnected");
+    broadcast(
+      {
+        type: "USER_LIST",
+        users,
+      },
+      ws
+    );
+  });
+});

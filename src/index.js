@@ -1,25 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { Provider } from "react-redux";
-import { createStore } from "redux";
-import { addUser } from "./actions";
+import configureStore from "./configureStore";
 
-import chat from "./reducers";
+const store = configureStore();
 
-const store = createStore(
-  chat,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
-store.dispatch(addUser("Me"));
+const colors = {
+  brand: {
+    sidebar: "#111A35",
+    messageList: "#1c2541",
+    addMessage: "#3a506b",
+    navbar: "#151E39",
+    "Maximum Blue Green": "#5bc0be",
+    "Turquoise Blue": "#6fffe9",
+  },
+};
+const theme = extendTheme({ colors });
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ChakraProvider theme={theme}>
+        <App />
+      </ChakraProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

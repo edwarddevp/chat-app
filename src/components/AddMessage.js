@@ -1,31 +1,32 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { addMessage } from "../actions";
+import { Input, Grid } from "@chakra-ui/react";
 
-const AddMessage = (props) => {
-  let input;
+const AddMessage = () => {
+  const dispatch = useDispatch();
+  const input = useRef(null);
 
   return (
-    <section id="new-message">
-      <input
+    <Grid px={4} pb={6}>
+      <Input
+        // variant="filled"
+        bg="brand.addMessage"
+        borderColor="brand.addMessage"
+        _hover={{
+          borderColor: "brand.addMessage",
+        }}
         onKeyPress={(e) => {
-          console.log(input.value);
-          if (e.key === "Enter") {
-            console.log(input.value);
-            props.dispatch(input.value, "Me");
-            input.value = "";
+          if (e.key === "Enter" && input.current.value) {
+            dispatch(addMessage(input.current.value, "Me"));
+            input.current.value = "";
           }
         }}
         type="text"
-        ref={(node) => {
-          input = node;
-        }}
+        ref={input}
       />
-    </section>
+    </Grid>
   );
-};
-
-AddMessage.propTypes = {
-  dispatch: PropTypes.func.isRequired,
 };
 
 export default AddMessage;

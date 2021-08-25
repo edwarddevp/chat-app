@@ -1,23 +1,25 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { Box, Grid } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
 
-const Sidebar = ({ users }) => (
-  <aside id="sidebar" className="sidebar">
-    <ul>
+const Sidebar = () => {
+  const users = useSelector((state) => state.users);
+
+  return (
+    <Grid
+      background="brand.sidebar"
+      as="aside"
+      p={4}
+      fontSize="2xl"
+      gap={4}
+      // borderRightWidth="1px"
+      alignContent="start"
+    >
       {users.map((user) => (
-        <li key={user.id}>{user.name}</li>
+        <Box key={user.id}>{user.name}</Box>
       ))}
-    </ul>
-  </aside>
-);
-
-Sidebar.propTypes = {
-  users: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-    }).isRequired
-  ).isRequired,
+    </Grid>
+  );
 };
 
 export default Sidebar;

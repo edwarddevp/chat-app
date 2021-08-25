@@ -1,25 +1,27 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 import Message from "./Message";
+import { Grid } from "@chakra-ui/react";
 
-const MessagesList = ({ messages }) => (
-  <section id="messages-list">
-    <ul>
+const MessagesList = () => {
+  const messages = useSelector((state) => state.messages);
+
+  return (
+    <Grid
+      overflowY="auto"
+      h="calc(100vh - 64px - 42px - 1rem)"
+      py={4}
+      ml={6}
+      mr={2}
+      gap={2}
+      alignContent="start"
+      className="scrollbar"
+    >
       {messages.map((message) => (
         <Message key={message.id} {...message} />
       ))}
-    </ul>
-  </section>
-);
-
-MessagesList.propTypes = {
-  messages: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      message: PropTypes.string.isRequired,
-      author: PropTypes.string.isRequired,
-    }).isRequired
-  ).isRequired,
+    </Grid>
+  );
 };
 
 export default MessagesList;

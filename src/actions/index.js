@@ -27,3 +27,11 @@ export const populateUserList = (users) => ({
   type: types.USER_LIST,
   users,
 });
+
+export const openSocket = () => ({
+  type: types.OPEN_SOCKET,
+});
+
+export const closeSocket = () => ({
+  type: types.CLOSE_SOCKET,
+});
